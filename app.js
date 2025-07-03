@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     // API Token
-    const API_TOKEN = "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";
+    const API_TOKEN = "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";
 
     // DOM Elements
     const generateBtn = document.getElementById('generateBtn');
