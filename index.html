@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Art Studio | Professional Image Generator</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="#" class="logo">
+          <i class="fas fa-magic"></i>
+          <span>AI Art Studio</span>
+        </a>
+        <div class="nav-links">
+          <a href="#"><i class="fas fa-home"></i> Home</a>
+          <a href="#"><i class="fas fa-images"></i> Gallery</a>
+          <a href="#"><i class="fas fa-star"></i> Premium</a>
+          <a href="#"><i class="fas fa-user"></i> Account</a>
+          <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="app-container">
+      <!-- Sidebar Settings -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h3><i class="fas fa-sliders-h"></i> Generation Settings</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="prompt"><i class="fas fa-comment-alt"></i> Prompt</label>
+          <textarea
+            id="prompt"
+            placeholder="A beautiful landscape with mountains and lake at sunset, digital art..."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="negativePrompt"
+            ><i class="fas fa-ban"></i> Negative Prompt</label
+          >
+          <textarea
+            id="negativePrompt"
+            placeholder="blurry, low quality, text, watermark, distorted faces..."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="model"><i class="fas fa-robot"></i> AI Model</label>
+          <select id="model">
+            <option value="stabilityai/stable-diffusion-xl-base-1.0">
+              Stable Diffusion XL (Highest Quality)
+            </option>
+            <option value="runwayml/stable-diffusion-v1-5">
+              Stable Diffusion 1.5 (Balanced)
+            </option>
+            <option value="prompthero/openjourney">
+              Openjourney (Art Style)
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="steps"
+            ><i class="fas fa-tachometer-alt"></i> Steps (20-50)</label
+          >
+          <input type="range" id="steps" min="20" max="50" value="30" />
+          <div class="progress-info">
+            <span>Precision: </span>
+            <span id="stepsValue">30</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="guidance"
+            ><i class="fas fa-magic"></i> Guidance Scale (7-15)</label
+          >
+          <input
+            type="range"
+            id="guidance"
+            min="7"
+            max="15"
+            step="0.5"
+            value="10"
+          />
+          <div class="progress-info">
+            <span>Creativity: </span>
+            <span id="guidanceValue">10</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="seed"
+            ><i class="fas fa-seedling"></i> Seed (Optional)</label
+          >
+          <input type="number" id="seed" placeholder="Leave empty for random" />
+        </div>
+
+        <button id="generateBtn" class="btn">
+          <i class="fas fa-magic"></i> Generate Image
+        </button>
+
+        <div class="error" id="errorMessage"></div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="generation-area">
+          <div class="generation-header">
+            <h2><i class="fas fa-image"></i> Your Generated Art</h2>
+            <div class="actions" id="imageActions" style="display: none">
+              <button class="btn btn-sm" id="downloadBtn">
+                <i class="fas fa-download"></i> Download HD
+              </button>
+              <button class="btn btn-sm" id="upscaleBtn">
+                <i class="fas fa-expand"></i> Upscale
+              </button>
+              <button class="btn btn-sm" id="shareBtn">
+                <i class="fas fa-share-alt"></i> Share
+              </button>
+            </div>
+          </div>
+
+          <div class="generation-body">
+            <div class="image-placeholder" id="imagePlaceholder">
+              <i class="fas fa-image"></i>
+              <p>Your generated image will appear here</p>
+            </div>
+
+            <div class="loading">
+              <div class="progress-container">
+                <div class="progress-info">
+                  <span id="loadingStatus">Initializing model...</span>
+                  <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" id="progressBar"></div>
+                </div>
+              </div>
+              <div class="spinner"></div>
+              <p id="loadingTip">
+                Tip: Higher steps (40-50) produce better quality but take longer
+              </p>
+            </div>
+
+            <img
+              id="generatedImage"
+              alt="Generated image will appear here"
+              class="fade-in"
+            />
+          </div>
+        </div>
+
+        <div class="gallery-section">
+          <div class="section-header">
+            <h3><i class="fas fa-history"></i> Recent Generations</h3>
+            <button class="btn btn-sm" id="clearGalleryBtn">
+              <i class="fas fa-trash"></i> Clear All
+            </button>
+          </div>
+
+          <div class="gallery" id="gallery">
+            <div class="gallery-empty">
+              <i
+                class="fas fa-images"
+                style="
+                  font-size: 2rem;
+                  margin-bottom: 1rem;
+                  color: var(--primary);
+                "
+              ></i>
+              <p>No images generated yet</p>
+              <p style="font-size: 0.9rem; margin-top: 0.5rem">
+                Your generated images will appear here
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-column">
+          <h4>AI Art Studio</h4>
+          <p style="color: #cad3c8; margin-bottom: 1rem">
+            Transform your imagination into stunning visual art with AI.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Gallery</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Prompt Guide</a></li>
+            <li><a href="#">Model Comparison</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2023 AI Art Studio. Powered by Hugging Face AI. All generated images
+        are owned by their creators.
+      </div>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>
